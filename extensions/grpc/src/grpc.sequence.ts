@@ -5,39 +5,20 @@
 
 import {invokeMethod} from '@loopback/core';
 import debugFactory from 'debug';
-import {
-  ServerDuplexStream,
-  ServerReadableStream,
-  ServerUnaryCall,
-  ServerWritableStream,
-} from 'grpc';
+import {ServerUnaryCall} from 'grpc';
 import {GrpcBindings} from './keys';
 import {GrpcRequestContext} from './request-context';
 
-const debug = debugFactory('loopback:grpc');
+const debug = debugFactory('loopback:grpc:sequence');
 
 /**
- * Interface that describes a GRPC Sequence
+ *Interface for gRPC sequence
  */
-export interface GrpcHandler {
-  unaryCall<Req = unknown, Res = unknown>(
-    request: ServerUnaryCall<Req>,
-  ): Promise<Res>;
-
-  clientStreamingCall?<Req = unknown, Res = unknown>(
-    request: ServerReadableStream<Req>,
-  ): Promise<Res>;
-
-  serverStreamingCall?<Req = unknown>(
-    request: ServerWritableStream<Req>,
-  ): Promise<void>;
-
-  bidiStreamingCall?<Req = unknown, Res = unknown>(
-    request: ServerDuplexStream<Req, Res>,
-  ): Promise<void>;
-}
-
 export interface GrpcSequenceHandler {
+  /**
+   * Handle a gRPC request/response
+   * @param reqCtx - gRPC request context
+   */
   handle<Req = unknown, Res = unknown>(
     reqCtx: GrpcRequestContext<Req, Res>,
   ): Promise<Res | void>;
@@ -46,7 +27,7 @@ export interface GrpcSequenceHandler {
 /**
  * GRPC Sequence
  */
-export class GrpcSequence implements GrpcSequenceHandler {
+export class DefaultGrpcSequence implements GrpcSequenceHandler {
   constructor() {}
 
   async invoke<Req = unknown, Res = unknown>(

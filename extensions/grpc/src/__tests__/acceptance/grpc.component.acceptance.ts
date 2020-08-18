@@ -43,7 +43,7 @@ describe('GrpcComponent', () => {
   // LoopBack GRPC Service
   it('creates a grpc service', async () => {
     // Define Greeter Service Implementation
-    class GreeterCtrl implements Greeter.Service {
+    class GreeterController implements Greeter.Service {
       // Tell LoopBack that this is a Service RPC implementation
       @grpc(Greeter.SayHello)
       sayHello(request: HelloRequest): HelloReply {
@@ -62,7 +62,7 @@ describe('GrpcComponent', () => {
     // Load LoopBack Application
     const app = givenApplication();
     await app.boot();
-    app.controller(GreeterCtrl);
+    app.controller(GreeterController);
     await app.start();
     // Make GRPC Client Call
     const result: HelloReply = await asyncCall({

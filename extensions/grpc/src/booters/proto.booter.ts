@@ -16,6 +16,8 @@ import path from 'path';
 import {GrpcProto} from '../types';
 const debug = debugFactory('loopback:grpc:booter:proto');
 
+process.env.DEBUG = 'loopback:boot:base-artifact-booter';
+
 /**
  * A class that extends BaseArtifactBooter to boot the gRPC proto artifact type.
  *
@@ -32,12 +34,12 @@ export class ProtoBooter extends BaseArtifactBooter {
     public app: Application,
     @inject(BootBindings.PROJECT_ROOT) projectRoot: string,
     @config()
-    public entityConfig: ArtifactOptions = {},
+    public protoConfig: ArtifactOptions = {},
   ) {
     super(
       projectRoot,
-      // Set TypeORM connection options if passed in via bootConfig
-      {...ProtoDefaults, ...entityConfig},
+      // Set proto options if passed in via bootConfig
+      {...ProtoDefaults, ...protoConfig},
     );
   }
 

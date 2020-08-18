@@ -5,10 +5,12 @@
 
 import {ContextView, filterByTag, inject} from '@loopback/core';
 import {execSync} from 'child_process';
+import debugFactory from 'debug';
 import {GrpcObject, MethodDefinition, ServiceDefinition} from 'grpc';
 import path from 'path';
 import {GrpcBindings} from './keys';
 import {GrpcOperation, GrpcProto, GrpcServerConfig} from './types';
+const debug = debugFactory('loopback:grpc:generator');
 
 /**
  * GRPC TypeScript generator.
@@ -47,14 +49,17 @@ export class GrpcGenerator {
 
       for (const pkg in protoObj.proto) {
         const pkgObj = protoObj.proto[pkg] as GrpcObject;
+        debug('Protobuf packge: %s', pkg, pkgObj);
         for (const key in pkgObj) {
           const child = pkgObj[key] as GrpcObject;
           if (child.service) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const service = child.service as ServiceDefinition<any>;
+            debug('Protobuf service: %s', key, service);
             for (const m in service) {
               const method = service[m] as MethodDefinition<unknown, unknown>;
               const methodPath = (method.path as unknown) as string;
+              debug('Protobuf method: %s', m, method);
               this.protos[methodPath] = {
                 package: pkgObj,
                 service,

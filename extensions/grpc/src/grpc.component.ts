@@ -16,7 +16,7 @@ import {
 } from '@loopback/core';
 import {ProtoBooter} from './booters/proto.booter';
 import {GrpcGenerator} from './grpc.generator';
-import {GrpcSequence} from './grpc.sequence';
+import {DefaultGrpcSequence} from './grpc.sequence';
 import {GrpcServer} from './grpc.server';
 import {GrpcBindings} from './keys';
 import {ServerProvider} from './providers/server.provider';
@@ -57,9 +57,12 @@ export class GrpcComponent implements Component {
       .bind(GrpcBindings.GRPC_GENERATOR)
       .toClass(GrpcGenerator)
       .inScope(BindingScope.SINGLETON);
-    app
-      .bind(GrpcBindings.GRPC_SEQUENCE)
-      .toClass(config.sequence ?? GrpcSequence);
+
+    const sequenceBinding = createBindingFromClass(
+      config.sequence ?? DefaultGrpcSequence,
+      {key: GrpcBindings.GRPC_SEQUENCE},
+    );
+    app.add(sequenceBinding);
 
     const booterBindings = createBindingFromClass(ProtoBooter);
     app.add(booterBindings);
